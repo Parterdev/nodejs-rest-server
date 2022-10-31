@@ -1,4 +1,4 @@
-const { validationMessages } = require('../../helpers');
+const { validationMessages } = require('../../helpers/strings');
 const { Error, Errors } = require('../../models/error');
 
 const errorHandling = (value = []) => {
@@ -12,11 +12,13 @@ const errorHandling = (value = []) => {
     "email", 
     "body"
   );
-
-  Errors.createErrors(e1);
+  return Errors.createErrors(e1);
 };
 
-const showHandlingErrors = () => Errors.showErrorList;
+const showHandlingErrors = () => {
+  return Errors.showErrorList
+}
+
 
 module.exports = {
   errorHandling,
