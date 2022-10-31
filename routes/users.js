@@ -8,25 +8,17 @@ const {
   patchUser,
   deleteUser
 } = require('../controllers/users/users');
-// Using express validator middleware to validate body fields
-const { check } = require('express-validator');
-const { validationMessages } = require('../helpers');
-const { validateReqFields } = require('../middlewares/index');
+const { 
+  postMiddleware,
+  putMiddleware
+} = require('../middlewares/index');
 
 // Registering server routes
 router.get('/', getUsers);
 
-router.post('/', [
-  // Using middlewares to intercept controller execution
-  check('name', validationMessages.nameIsRequired).not().isEmpty(),
-  check('email', validationMessages.emailError).isEmail(),
-  check('password', validationMessages.passwordLenghtError).isLength({ min: 8 }),
-  check('role', validationMessages.notValidRole).isIn(['ADMIN_ROLE', 'USER_ROLE']),
-  // Catching express validator middleware errors
-  validateReqFields,
-], postUser);
+router.post('/', postMiddleware, postUser);
 
-router.put('/:id', putUser);
+router.put('/:id', putMiddleware, putUser);
 
 router.patch('/', patchUser);
 
