@@ -3,8 +3,7 @@ const {response, request} = require('express');
 // Calling user's model (Mongoose)
 const userModel = require('../../models/user');
 // Calling helpers functions
-const { generateHash } = require('../../helpers/index');
-const { errorHandling, showHandlingErrors } = require('./errorHandling');
+const { generateHash } = require('../../helpers/index');;
 
 const getUsers = async(req = request, res = response) => {
   // console.log('REQ INFO:', {req})
@@ -31,32 +30,34 @@ const postUser = async (req, res = response) => {
   // Hashing user's password
   user.password = await generateHash(12, password);
 
-  // Pass params to reference errors with handling validator
-  errorHandling([email,password]);
-
-  // Verifying email
-  const emailExists = await userModel.findOne({email});
-  if (emailExists) {
-    return res.status(400).json(showHandlingErrors());
-  };
-
   await user.save((err) => {
     if (!err && email != '') {
       res.json({
         msg: 'User has been created',
-        user,
+        user
       });
     }else {
-      console.log(err);
+      throw new Error(err);
     }
   });
 };
 
 
-const putUser = (req, res = response) => {
+const putUser = async(req, res = response) => {
+
+  // Capture data
+  const { id } = req.params;
+
+  const { password, google, ...rest } = req.body; 
+
+  password ? rest.password = await generateHash(12, password) : '';
+
+  // Update registry
+  const user = await userModel.findByIdAndUpdate(id, rest);
+
   res.json({
-    msg: 'PUT METHOD | API',
-    id: req.params.id,
+    msg: `User with {$id} has been updated`,
+    user,
   });
   
 };
