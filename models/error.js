@@ -18,9 +18,8 @@ class Errors extends Error {
   static get showErrorList() {
     const errorObject = JSON.stringify(this._errorList);
     const errors = JSON.parse(errorObject);
-    return {
-      errors
-    };
+    // REMEMBER: use => {errors} to have {"errors"[{}, {}]}
+    return errors
   }
 
   // You can pass one or more errors
