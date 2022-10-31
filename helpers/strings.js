@@ -5,6 +5,7 @@ const validationMessages = {
   passwordLenghtError: "Password must have 8 characters",
   nameIsRequired: "The name field is required",
   notValidRole: "The role is invalid",
+  notValidID: "This ID is invalid"
 };
 
 
