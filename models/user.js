@@ -39,6 +39,21 @@ const userSchema = Schema({
   }
 });
 
+// Add special methods to this schema
+/* userSchema.methods.toJSON = function() {
+  const { __v, password, ...user } = this.toObject();
+  return user;
+}; */
+
+userSchema.set('toJSON', {
+  transform: function(doc, ret, opt) {
+    console.log("DOC-RET-OPT", {doc, ret, opt});
+    delete ret['password'];
+    delete ret['__v'];
+    return ret;
+  }
+})
+
 
 /** 
   * Mongoose converts the model name with lower case and plural form: users
