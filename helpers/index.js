@@ -1,9 +1,15 @@
 // Calling hash function (bcrypt.js)
-const { generateHash } = require('../helpers/bcrypt');
-// To validate responses
-const { validationMessages } = require('../helpers/strings');
+const { generateHash } = require('./bcrypt');
+// Export DB helper functions for middlewares
+const { 
+  isAValidRole, 
+  isEmailDuplicate,
+  searchUserById 
+} = require('./dbValidators');
 
 module.exports = {
   generateHash,
-  validationMessages
+  isAValidRole,
+  isEmailDuplicate,
+  searchUserById,
 }
