@@ -29,7 +29,7 @@ const isEmailDuplicate = async(email = '') => {
 const searchUserById = async(id = '') => {
   const userById = await userModel.findById(id);
   if(!userById) {
-    throw new Error(`Couldn't find user with id: {$id}`); 
+    throw new Error(`Couldn't find user with id: ${id}`); 
   }
 }
 
