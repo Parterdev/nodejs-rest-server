@@ -4,19 +4,25 @@ const {response, request} = require('express');
 const userModel = require('../../models/user');
 // Calling helpers functions
 const { generateHash } = require('../../helpers/index');
-const { validationMessages } = require('../../helpers/strings');
 
 const getUsers = async(req = request, res = response) => {
   const { limit =  5, from = 0 } = req.query;
-  const filter = {};
-
-  const users = await userModel.find(filter)
+  const query = { state: true }
+  
+  const [totalRecords, users] = await Promise.all([
+    userModel.count(query),
+    userModel.find(query)
     .skip(Number(from))
-    .limit(Number(limit));
+    .limit(Number(limit))
+  ]);
+  const totalShowed = users.length;
+  
 
-  // const total = await userModel.countDocuments({state: true});
-
-  res.json(users);
+  res.json({
+    totalRecords,
+    totalShowed,
+    users
+  });
 };
 
 
