@@ -8,17 +8,19 @@ const {
   patchUser,
   deleteUser
 } = require('../controllers/users/users');
-const { 
-  postMiddleware,
-  putMiddleware
+// Importing array middlewares
+const {
+  middleware,
+  validateReqFields
 } = require('../middlewares/index');
+
 
 // Registering server routes
 router.get('/', getUsers);
 
-router.post('/', postMiddleware, postUser);
+router.post('/', [middleware.postMiddleware()], validateReqFields, postUser);
 
-router.put('/:id', putMiddleware, putUser);
+router.put('/:id', [middleware.putMiddleware()], validateReqFields, putUser);
 
 router.patch('/', patchUser);
 

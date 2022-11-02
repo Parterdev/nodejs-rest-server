@@ -3,24 +3,25 @@ const {response, request} = require('express');
 // Calling user's model (Mongoose)
 const userModel = require('../../models/user');
 // Calling helpers functions
-const { generateHash } = require('../../helpers/index');;
+const { generateHash } = require('../../helpers/index');
+const { validationMessages } = require('../../helpers/strings');
 
 const getUsers = async(req = request, res = response) => {
-  // console.log('REQ INFO:', {req})
-  // const {h1, page = 1} = req.query;
-
+  const { limit =  5, from = 0 } = req.query;
   const filter = {};
-  const users = await userModel.find(filter);
 
-  res.json({
-    msg: 'GET METHOD | API',
-    users
-  });
+  const users = await userModel.find(filter)
+    .skip(Number(from))
+    .limit(Number(limit));
+
+  // const total = await userModel.countDocuments({state: true});
+
+  res.json(users);
 };
 
 
 const postUser = async (req, res = response) => {
-
+  
   // Extract body params
   const { name, email, password, role }  = req.body;
 
@@ -30,16 +31,12 @@ const postUser = async (req, res = response) => {
   // Hashing user's password
   user.password = await generateHash(12, password);
 
-  await user.save((err) => {
-    if (!err && email != '') {
-      res.json({
-        msg: 'User has been created',
-        user
-      });
-    }else {
-      throw new Error(err);
-    }
+  await user.save();
+  res.json({
+    msg: 'User has been created',
+    user
   });
+
 };
 
 
@@ -48,16 +45,15 @@ const putUser = async(req, res = response) => {
   // Capture data
   const { id } = req.params;
 
-  const { password, google, ...rest } = req.body; 
-
+  const { _id, password, email, google, ...rest } = req.body; 
   password ? rest.password = await generateHash(12, password) : '';
-
+  
   // Update registry
-  const user = await userModel.findByIdAndUpdate(id, rest);
+  const user = await userModel.findByIdAndUpdate(id, rest, {new: true});
 
   res.json({
-    msg: `User with {$id} has been updated`,
-    user,
+    msg: `User with id: ${id} has been updated`,
+    user: user,
   });
   
 };

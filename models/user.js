@@ -27,7 +27,6 @@ const userSchema = Schema({
   },
   role: {
     type: String,
-    required: true,
     enum: ['ADMIN_ROLE', 'USER_ROLE']
   },
   img: {
@@ -47,7 +46,7 @@ const userSchema = Schema({
 
 userSchema.set('toJSON', {
   transform: function(doc, ret, opt) {
-    console.log("DOC-RET-OPT", {doc, ret, opt});
+    // console.log("DOC-RET-OPT", {doc, ret, opt});
     delete ret['password'];
     delete ret['__v'];
     return ret;
